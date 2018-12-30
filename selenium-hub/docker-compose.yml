@@ -1,0 +1,19 @@
+version: '3.4'
+services:
+  selenium-hub:
+    build:
+      context: ./build/
+      dockerfile: ./Dockerfile
+    image: selenium-hub
+    container_name: selenium-hub
+    environment:
+      - HUB_PORT=4441
+    ports:
+      - "4441:4441"
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/wd/hub"]
+      interval: 1m
+      timeout: 20s
+      retries: 5
+      start_period: 5s
