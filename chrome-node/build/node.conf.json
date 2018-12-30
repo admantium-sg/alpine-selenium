@@ -1,0 +1,19 @@
+{
+  "browserTimeout": 30,
+  "capabilities": [
+    {
+      "version": "57.0.2987.133",
+      "browserName": "chrome",
+      "seleniumProtocol": "WebDriver",
+      "maxInstances": 5,
+      "goog:chromeOptions":
+        {
+          "args": [
+            "--headless",
+            "--no-sandbox",
+            "--start-maximized"
+          ]
+        }
+    }
+  ]
+}

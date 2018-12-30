@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  chrome-node:
+    build:
+      context: ./build/
+      dockerfile: ./Dockerfile
+    image: chrome-node
+    container_name: chrome-node
+    environment:
+      - HUB_HOST=${HUB_HOST-localhost}
+      - HUB_PORT=${HUB_PORT-4441}
+    volumes:
+      - "/dev/shm:/dev/shm"
+    restart: always
