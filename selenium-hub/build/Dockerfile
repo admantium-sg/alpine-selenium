@@ -1,21 +1,17 @@
 FROM gliderlabs/alpine:3.6
-RUN apk update
 
-# Set timezone
-RUN apk add tzdata
-RUN cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime
-RUN apk del tzdata
+# Set timezone 
+RUN apk add --update tzdata && \
+    cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+    apk del tzdata
 
-# Install packages
-RUN apk add curl nano
-RUN apk add openjdk8-jre
-
-# Cleanup & Upgrade
-RUN apk upgrade --available --update-cache
-RUN rm -rf /var/lib/apt/lists/* \
-    /var/cache/apk/* \
-    /usr/share/man \
-    /tmp/*
+#Install packages & cleanup
+RUN apk add --update curl \
+      openjdk8 && \
+    rm -rf /var/lib/apt/lists/* \
+      /var/cache/apk/* \
+      /usr/share/man \
+      /tmp/*
 
 # Copy files
 WORKDIR /etc/selenium-hub/
@@ -32,7 +28,7 @@ RUN chmod +x ./bin/dumb-init
 RUN curl -Lo ./lib/selenium.jar https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
 RUN chmod +x ./lib/selenium.jar
 
-# Copy start script
+# Copy start script and set description
 COPY ./start.sh ./bin/start.sh
 RUN chmod +x ./bin/start.sh
 
