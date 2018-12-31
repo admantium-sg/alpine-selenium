@@ -1,28 +1,21 @@
 FROM zenika/alpine-node:9
-RUN apk update
 
-# Set timezone
-RUN apk add tzdata
-RUN cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime
-RUN apk del tzdata
+# Set timezone 
+RUN apk add --update tzdata && \
+    cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+    apk del tzdata
 
-# Install packages
-RUN apk add curl nano
-RUN apk add openjdk8-jre
-
-# Install chrome
-RUN apk add chromium>68.0.3440.75-r0 chromium-chromedriver>68.0.3440.75-r0
-
-# Removing old dependencies
-RUN apk del make gcc g++ python git
-
-# Update & Cleanup
-RUN apk upgrade --available --update-cache
-RUN rm -rf /var/lib/apt/lists/* \
-    /var/cache/apk/* \
-    /usr/share/man \
-    /tmp/*
-
+    # Install packages & cleanup
+RUN apk add --update curl \
+      'chromium=68.0.3440.75-r0' \
+      'chromium-chromedriver=68.0.3440.75-r0' \
+      openjdk8 && \
+    apk del make gcc g++ python git && \
+    rm -rf /var/lib/apt/lists/* \
+      /var/cache/apk/* \
+      /usr/share/man \
+      /tmp/*
+      
 # Copy files
 WORKDIR /etc/chrome-node/
 RUN mkdir bin
