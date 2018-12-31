@@ -5,7 +5,7 @@ RUN apk add --update tzdata && \
     cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
     apk del tzdata
 
-    # Install packages & cleanup
+# Install packages & cleanup
 RUN apk add --update curl \
       'chromium=68.0.3440.75-r0' \
       'chromium-chromedriver=68.0.3440.75-r0' \
@@ -15,27 +15,19 @@ RUN apk add --update curl \
       /var/cache/apk/* \
       /usr/share/man \
       /tmp/*
-      
-# Copy files
+
+# Set workdir
 WORKDIR /etc/chrome-node/
-RUN mkdir bin
-RUN mkdir lib
-RUN mkdir conf
-COPY ./node.conf.json conf/
 
-# Use 'dumb-init' to start the container
-RUN curl -Lo ./bin/init https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64
-RUN chmod +x ./bin/init 
+# Download 'init' and 'selenium.jar'
+RUN curl -L https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64 --create-dirs -o bin/init && \
+    curl -L https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar --create-dirs -o lib/selenium.jar
 
-# Download Selenium
-RUN curl -Lo ./lib/selenium.jar https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
-RUN chmod +x ./lib/selenium.jar
-
-# Copy start script
-COPY ./start.sh ./bin/start.sh
-RUN chmod +x ./bin/start.sh
+# Copy start script and set description
+COPY start.sh bin/
+COPY node.conf.json conf/
+RUN chmod +x bin/*
 
 # Start the node
 ENTRYPOINT ["/etc/chrome-node/bin/init"]
 CMD ["/etc/chrome-node/bin/start.sh"]
-
